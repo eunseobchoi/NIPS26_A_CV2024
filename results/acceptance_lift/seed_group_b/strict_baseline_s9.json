@@ -1,0 +1,4077 @@
+{
+  "args": {
+    "train_csv": "data/cv2024/Dataset/training/training_data.xlsx",
+    "orig_val_csv": "<CV2024_ROOT>/validation/validation_data.xlsx",
+    "dedup_val_csv": "artifacts/csvs/cv2024_validation_le6_plus_internal.csv",
+    "seeds": [
+      9
+    ],
+    "epochs": 10,
+    "batch": 128,
+    "output": "acceptance_lift/strict_baseline_s9.json",
+    "no_batch128_assert": false
+  },
+  "meta": {
+    "script_path": "src/counterfactual/phase5_counterfactual_v5.py",
+    "script_sha256": "be3fd06fab1a04d7311f70ab9f1eb0563a7c8f1db5b2c6081987e04e68b90edf",
+    "script_md5": "1c537826c5abd2f3b5a1bf6c32fec10f",
+    "script_version": "v5 (per-source val)",
+    "torch_version": "2.6.0+cu124",
+    "cuda_version": "12.4",
+    "cudnn_version": 90100,
+    "gpu_name": "NVIDIA A100-SXM4-80GB",
+    "train_csv_md5": "af3745c3cb5caac73468f08a5de9cf63",
+    "orig_val_path": "<CV2024_ROOT>/validation/validation_data.xlsx",
+    "orig_val_md5": "468f2d08e1e756b2a3ea699b810a9bdf",
+    "dedup_val_csv": "artifacts/csvs/cv2024_validation_le6_plus_internal.csv",
+    "dedup_val_csv_md5": "e4fd3f882a47182a23ff4d37ec4c4396",
+    "timestamp_start": "2026-04-27T10:10:19Z",
+    "determinism_enabled": true,
+    "batch": 128,
+    "timestamp_end": "2026-04-27T10:31:46Z"
+  },
+  "runs": [
+    {
+      "seed": 9,
+      "history": [
+        {
+          "epoch": 1,
+          "loss": 1.1154827119547353,
+          "orig_val": {
+            "acc": 0.8617654351599305,
+            "bal_acc": 0.6112644468015457,
+            "f1_macro": 0.6384727230509268,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.38832997987927564,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.6462395543175488,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.5021645021645021,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.20875420875420875,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.7088235294117647,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.46647230320699706,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.9711890616098315,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.392,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.8286713286713286,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.5475033206517603,
+                "acc": 0.9577756670408427,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6807692307692308,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 0.8059701492537313,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.125,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.041666666666666664,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7811158798283262,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.5898876404494382,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.9965055329062318,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 0.0,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.9066147859922179,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.4418841018518899,
+                "acc": 0.6064350664490558,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.06578947368421052,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.547085201793722,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.559322033898305,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.24096385542168675,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.5514018691588785,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.32098765432098764,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.8307193077339102,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.4188034188034188,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.6148692810457517,
+                "acc": 0.8303030303030303,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.1111111111111111,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 1.0,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9632352941176471,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.0,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.5689655172413793,
+                "acc": 0.7422680412371134,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.13793103448275862,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.6294498381877023,
+            "bal_acc": 0.47656841876311473,
+            "f1_macro": 0.4832528075803024,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.06521739130434782,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.5612244897959183,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.5728368017524644,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.2350230414746544,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.6105263157894737,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.32903225806451614,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.8404846037354872,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.40848214285714285,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.14285714285714285,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.4509150475570612,
+                "acc": 0.6187668877425694,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.06334841628959276,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.5567010309278351,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.5728368017524644,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.2350230414746544,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.6105263157894737,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.3157894736842105,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.8314363143631436,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.4216589861751152,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.6148692810457517,
+                "acc": 0.8353658536585366,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.1111111111111111,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 1.0,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9632352941176471,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.0,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.5714285714285714,
+                "acc": 0.7362637362637363,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.14285714285714285,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.9703364817001181,
+            "bal_acc": 0.5459013197394719,
+            "f1_macro": 0.5624826527852782,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.0,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.8537735849056604,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.0,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 0.0,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.8602150537634409,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.720108695652174,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9949688936975927,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.9381443298969072,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 130.64848924102262
+        },
+        {
+          "epoch": 2,
+          "loss": 0.909591359286585,
+          "orig_val": {
+            "acc": 0.8754029258616415,
+            "bal_acc": 0.6299111117767633,
+            "f1_macro": 0.6705147010609495,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.4124748490945674,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.6991643454038997,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.6545454545454545,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.14814814814814814,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.7147058823529412,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.5393586005830904,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.9729795719052657,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.392,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.7657342657342657,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.6294135294953539,
+                "acc": 0.96425179172783,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.7230769230769231,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 0.9253731343283582,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.19078947368421054,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.08333333333333333,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.8025751072961373,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.7078651685393258,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.998932246165793,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 0.4117647058823529,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.8210116731517509,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.45150433629161035,
+                "acc": 0.6376777803683842,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.07017543859649122,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.5605381165919282,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.7248255234297108,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.1606425702811245,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.5233644859813084,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.35185185185185186,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.8274743104380746,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.39316239316239315,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.619281045751634,
+                "acc": 0.8727272727272727,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.1111111111111111,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9852941176470589,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.3333333333333333,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.6379310344827587,
+                "acc": 0.7835051546391752,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.27586206896551724,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.6599630143319464,
+            "bal_acc": 0.5006392737413203,
+            "f1_macro": 0.5343789255906202,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.07391304347826087,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.5918367346938775,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.732749178532311,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.16129032258064516,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.5789473684210527,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.34838709677419355,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.8384654215042907,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.3950892857142857,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.2857142857142857,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.46267237208250445,
+                "acc": 0.64873495455662,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.07239819004524888,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.5876288659793815,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.732749178532311,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.16129032258064516,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.5789473684210527,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.34210526315789475,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.8276422764227642,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.3986175115207373,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.6097572362278244,
+                "acc": 0.8719512195121951,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.1111111111111111,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9852941176470589,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.2857142857142857,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.6428571428571428,
+                "acc": 0.7802197802197802,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.2857142857142857,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.9758953168044077,
+            "bal_acc": 0.5673244564062275,
+            "f1_macro": 0.5266784223202109,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.010526315789473684,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.9292452830188679,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.031055900621118012,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 0.0,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.8709677419354839,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.8097826086956522,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9987016499864755,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.8883161512027491,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 126.39841953408904
+        },
+        {
+          "epoch": 3,
+          "loss": 0.8512265033282518,
+          "orig_val": {
+            "acc": 0.8865608727994049,
+            "bal_acc": 0.6774499593790975,
+            "f1_macro": 0.7106189162160458,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.4426559356136821,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.7103064066852368,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.6138528138528139,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.23232323232323232,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.8235294117647058,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.6384839650145773,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.9777813949702938,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.402,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.9335664335664335,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.7570539115731951,
+                "acc": 0.9734047146187721,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.7730769230769231,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 0.917910447761194,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.24342105263157895,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.3125,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.9055793991416309,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.8314606741573034,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.9977674238012036,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 0.8823529411764706,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.9494163424124513,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.48230314842592537,
+                "acc": 0.6509675915131732,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.07456140350877193,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.5829596412556054,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.6699900299102692,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.21686746987951808,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.6448598130841121,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.41975308641975306,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.866955110870741,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.38247863247863245,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.7318954248366014,
+                "acc": 0.8848484848484849,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.2222222222222222,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 1.0,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9705882352941176,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.4666666666666667,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.896551724137931,
+                "acc": 0.9381443298969072,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.7931034482758621,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.6782246879334258,
+            "bal_acc": 0.5769866531621923,
+            "f1_macro": 0.59781621605637,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.0782608695652174,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.6122448979591837,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.6823658269441402,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.22580645161290322,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.6947368421052632,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.4258064516129032,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.8743059061080263,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.390625,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.7857142857142857,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.4943297514180252,
+                "acc": 0.6642102677474822,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.07239819004524888,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.6082474226804123,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.6823658269441402,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.22580645161290322,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.6947368421052632,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.4144736842105263,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.8672086720867209,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.38940092165898615,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.7242763772175537,
+                "acc": 0.8841463414634146,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.2222222222222222,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 1.0,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9705882352941176,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.42857142857142855,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.8928571428571428,
+                "acc": 0.9340659340659341,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.7857142857142857,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.9796831955922864,
+            "bal_acc": 0.632855518889455,
+            "f1_macro": 0.533178055510383,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.021052631578947368,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.9221698113207547,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.055900621118012424,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 0.2962962962962963,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.9139784946236559,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.8967391304347826,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9979442791452529,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.9587628865979382,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 130.33670520805754
+        },
+        {
+          "epoch": 4,
+          "loss": 0.7895806684022064,
+          "orig_val": {
+            "acc": 0.9078229605752541,
+            "bal_acc": 0.7619238179375345,
+            "f1_macro": 0.7709132869772822,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.6539235412474849,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.8941504178272981,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.5748917748917749,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.42424242424242425,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.8441176470588235,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.7142857142857143,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.9800602262553919,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.6,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.9335664335664335,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.8286121692202137,
+                "acc": 0.9821258958639151,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.9115384615384615,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 0.9850746268656716,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.4473684210526316,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.5625,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.9184549356223176,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.8651685393258427,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.9983498349834984,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 0.8235294117647058,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.9455252918287937,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.6114157813914648,
+                "acc": 0.7062252273257169,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.35964912280701755,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.8385650224215246,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.5942173479561316,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.39759036144578314,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.6822429906542056,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.5493827160493827,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.8799351000540833,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.5897435897435898,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.7911764705882353,
+                "acc": 0.9090909090909091,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9558823529411765,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6666666666666666,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.9137931034482758,
+                "acc": 0.9484536082474226,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8275862068965517,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.7320850670365233,
+            "bal_acc": 0.6856742756990067,
+            "f1_macro": 0.6935595027854184,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.3695652173913043,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.8520408163265306,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.6078860898138007,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.41935483870967744,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.7368421052631579,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.5548387096774193,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.8854114083796063,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.609375,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.8214285714285714,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.626650984130443,
+                "acc": 0.7202161631048882,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.3574660633484163,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.8505154639175257,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.6078860898138007,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.41935483870967744,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7368421052631579,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.5526315789473685,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.8802168021680217,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.6082949308755761,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.7864145658263305,
+                "acc": 0.9085365853658537,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9558823529411765,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6428571428571429,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.9107142857142857,
+                "acc": 0.945054945054945,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8214285714285714,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.9904565131837859,
+            "bal_acc": 0.8455189710966824,
+            "f1_macro": 0.7847510720237983,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.7368421052631579,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.9976415094339622,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.38509316770186336,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 0.7777777777777778,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.956989247311828,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.9347826086956522,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9990803354070869,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.9759450171821306,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 122.34073387086391
+        },
+        {
+          "epoch": 5,
+          "loss": 0.7208952130718036,
+          "orig_val": {
+            "acc": 0.920096702206794,
+            "bal_acc": 0.7922628758944656,
+            "f1_macro": 0.7984484498483397,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.7464788732394366,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.8802228412256268,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.7082251082251082,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.5016835016835017,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.8558823529411764,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.7784256559766763,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.9791649711076748,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.518,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.9545454545454546,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.8822021636186912,
+                "acc": 0.9873067956135049,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.9576923076923077,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 0.9850746268656716,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.5921052631578947,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.7291666666666666,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.927038626609442,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.898876404494382,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.9986410405746458,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 0.8823529411764706,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.9688715953307393,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.6541163068118018,
+                "acc": 0.7393331778969456,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.5087719298245614,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.8161434977578476,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.7258225324027916,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.4578313253012048,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7009345794392523,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6419753086419753,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.8729042725797729,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.5085470085470085,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.8030392156862746,
+                "acc": 0.8848484848484849,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 1.0,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9485294117647058,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.4,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.9137931034482758,
+                "acc": 0.9484536082474226,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8275862068965517,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.7628294036061026,
+            "bal_acc": 0.7199309857512992,
+            "f1_macro": 0.7276200062699607,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.5130434782608696,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.8214285714285714,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.7480832420591457,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.46543778801843316,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.7684210526315789,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.6580645161290323,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.8788490661282181,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.5245535714285714,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.8214285714285714,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.6704124356929533,
+                "acc": 0.7538688282977155,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.5067873303167421,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.8195876288659794,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.7480832420591457,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.46543778801843316,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7684210526315789,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6513157894736842,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.8737127371273713,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.5299539170506913,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.794467787114846,
+                "acc": 0.8841463414634146,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 1.0,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9485294117647058,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.35714285714285715,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.9107142857142857,
+                "acc": 0.945054945054945,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8214285714285714,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.9940968122786304,
+            "bal_acc": 0.9284740074125617,
+            "f1_macro": 0.8345395809201941,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.9368421052631579,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.9976415094339622,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.639751552795031,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 0.9629629629629629,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.946236559139785,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.9592391304347826,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9988639437381661,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.9862542955326461,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 127.86028184299357
+        },
+        {
+          "epoch": 6,
+          "loss": 0.6785088053335508,
+          "orig_val": {
+            "acc": 0.9259856186461691,
+            "bal_acc": 0.818098180059215,
+            "f1_macro": 0.8137977279386467,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.7565392354124748,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.8857938718662952,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.6458874458874458,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.494949494949495,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.8823529411764706,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.8367346938775511,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.981199641897941,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.722,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.9755244755244755,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.9121578146345143,
+                "acc": 0.9891201105258614,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.9615384615384616,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.5789473684210527,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.7916666666666666,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.9484978540772532,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.9382022471910112,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.9983498349834984,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 1.0,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.9922178988326849,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.6884194257825942,
+                "acc": 0.7563534623455351,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.5263157894736842,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.8161434977578476,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.6560319042871385,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.43775100401606426,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7383177570093458,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.7283950617283951,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.8885884261763115,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.7158119658119658,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.7749019607843137,
+                "acc": 0.8909090909090909,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9411764705882353,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.9137931034482758,
+                "acc": 0.9484536082474226,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8275862068965517,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.7815533980582524,
+            "bal_acc": 0.747972854892742,
+            "f1_macro": 0.7439738438327033,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.5347826086956522,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.8367346938775511,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.6812705366922235,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.4470046082949309,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.7894736842105263,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.7354838709677419,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.8924785461887935,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.7410714285714286,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.8214285714285714,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.7068108641561508,
+                "acc": 0.7735200196511913,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.5294117647058824,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.8350515463917526,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.6812705366922235,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.4470046082949309,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7894736842105263,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.7368421052631579,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.8888888888888888,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.7465437788018433,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.7691876750700279,
+                "acc": 0.8902439024390244,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9411764705882353,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.5714285714285714,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.9107142857142857,
+                "acc": 0.945054945054945,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8214285714285714,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.9951790633608816,
+            "bal_acc": 0.9431690084076735,
+            "f1_macro": 0.8457142661334457,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.9157894736842105,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.9976415094339622,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.6708074534161491,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 1.0,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.9838709677419355,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.9836956521739131,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9987016499864755,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.9948453608247423,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 124.0137782881502
+        },
+        {
+          "epoch": 7,
+          "loss": 0.6478626622274875,
+          "orig_val": {
+            "acc": 0.9311926605504587,
+            "bal_acc": 0.8172682027869497,
+            "f1_macro": 0.8264688824516027,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.7665995975855131,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.8551532033426184,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.7385281385281385,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.45791245791245794,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.8735294117647059,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.8104956268221575,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.9819321233824367,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.72,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.9685314685314685,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.9307081042585449,
+                "acc": 0.9910197737673776,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.9653846153846154,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 0.9925373134328358,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.7894736842105263,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.7916666666666666,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.9484978540772532,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.9101123595505618,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.9981556979227334,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 1.0,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.980544747081712,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.682382658260862,
+                "acc": 0.7701095826532991,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.543859649122807,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.7713004484304933,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.7308075772681955,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.39357429718875503,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7102803738317757,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.7037037037037037,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.8939967550027041,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.7115384615384616,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.789705882352941,
+                "acc": 0.9030303030303031,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9485294117647058,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6666666666666666,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.9310344827586207,
+                "acc": 0.9587628865979382,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8620689655172413,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.7970411465557097,
+            "bal_acc": 0.7510301499929007,
+            "f1_macro": 0.7666369628303797,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.5478260869565217,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.8112244897959183,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.7579408543263965,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.4147465437788018,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.7684210526315789,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.7161290322580646,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.8980312973245835,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.7388392857142857,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.8571428571428571,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.7058403645887377,
+                "acc": 0.789240972733972,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.5429864253393665,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.8092783505154639,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.7579408543263965,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.4147465437788018,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7684210526315789,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.7171052631578947,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.8943089430894309,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.7419354838709677,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.7849439775910363,
+                "acc": 0.9024390243902439,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9485294117647058,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6428571428571429,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.9285714285714286,
+                "acc": 0.9560439560439561,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8571428571428571,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.9964088941361668,
+            "bal_acc": 0.9607559215379989,
+            "f1_macro": 0.8571921283229567,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.9578947368421052,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.9952830188679245,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.8571428571428571,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 0.9259259259259259,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.989247311827957,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.9755434782608695,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9987557479037057,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.9862542955326461,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 125.65637128404342
+        },
+        {
+          "epoch": 8,
+          "loss": 0.6222705633567055,
+          "orig_val": {
+            "acc": 0.9316265807091495,
+            "bal_acc": 0.8136760699411505,
+            "f1_macro": 0.8238792683454423,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.7867203219315896,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.8384401114206128,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.7125541125541126,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.4478114478114478,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.8647058823529412,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.8425655976676385,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.9854317571416945,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.69,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.9685314685314685,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.9294865344424849,
+                "acc": 0.9913651670840169,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.9692307692307692,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 0.9850746268656716,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.7302631578947368,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.8333333333333334,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.9313304721030042,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.9325842696629213,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.999126383226558,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 1.0,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.9844357976653697,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.6848849745686236,
+                "acc": 0.7710422009792492,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.5833333333333334,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.7488789237668162,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.7098703888334995,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.37349397590361444,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.719626168224299,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.7530864197530864,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.9113034072471606,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.6794871794871795,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.7245098039215685,
+                "acc": 0.9030303030303031,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.3333333333333333,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9558823529411765,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6666666666666666,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.9137931034482758,
+                "acc": 0.9484536082474226,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8275862068965517,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.801202034211743,
+            "bal_acc": 0.7544072219433644,
+            "f1_macro": 0.769570512362057,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.591304347826087,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.8163265306122449,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.7393209200438116,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.4009216589861751,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.7894736842105263,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.7612903225806451,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.9141847551741544,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.7098214285714286,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.8214285714285714,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.7156517583856916,
+                "acc": 0.7939081306804225,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.5882352941176471,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.8144329896907216,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.7393209200438116,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.4009216589861751,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7894736842105263,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.7697368421052632,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.9111111111111111,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.7119815668202765,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.7197478991596638,
+                "acc": 0.9024390243902439,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.3333333333333333,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9558823529411765,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6428571428571429,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.9107142857142857,
+                "acc": 0.945054945054945,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8214285714285714,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.9971467926013381,
+            "bal_acc": 0.9683772353303084,
+            "f1_macro": 0.9751595518857195,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.968421052631579,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.9952830188679245,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.84472049689441,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 1.0,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.9623655913978495,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.9836956521739131,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9994049229104679,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.993127147766323,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 122.52196854096837
+        },
+        {
+          "epoch": 9,
+          "loss": 0.5989876326440544,
+          "orig_val": {
+            "acc": 0.9267294817753533,
+            "bal_acc": 0.8138011585820237,
+            "f1_macro": 0.8186921542086114,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.7967806841046278,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.8189415041782729,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.6051948051948052,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.6565656565656566,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.8852941176470588,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.7959183673469388,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.9877919752584032,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.616,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.9755244755244755,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.9285775329468993,
+                "acc": 0.9915378637423365,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.9730769230769231,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 0.9776119402985075,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.7171052631578947,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.8333333333333334,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.9527896995708155,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.9157303370786517,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.9992234517569404,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 1.0,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.9883268482490273,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.6823605933414312,
+                "acc": 0.7505245978083469,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.5964912280701754,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.7219730941704036,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.5882352941176471,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.6224899598393574,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7383177570093458,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.924283396430503,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.6004273504273504,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.819281045751634,
+                "acc": 0.9393939393939394,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.7777777777777778,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9852941176470589,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6666666666666666,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.9310344827586207,
+                "acc": 0.9587628865979382,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8620689655172413,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.7840961627369394,
+            "bal_acc": 0.7584115768269062,
+            "f1_macro": 0.7670103464038945,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.6086956521739131,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.8010204081632653,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.6133625410733844,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.6405529953917051,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.8105263157894737,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.6838709677419355,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.928319030792529,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.640625,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.8571428571428571,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.7142629552588187,
+                "acc": 0.7740112994350282,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6018099547511312,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.7989690721649485,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.6133625410733844,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.6405529953917051,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.8105263157894737,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6842105263157895,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.924119241192412,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.6405529953917051,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.8145191409897292,
+                "acc": 0.9390243902439024,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.7777777777777778,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9852941176470589,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6428571428571429,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.9285714285714286,
+                "acc": 0.9560439560439561,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8571428571428571,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.9969992129083038,
+            "bal_acc": 0.9578993123521078,
+            "f1_macro": 0.9677915283623156,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.9894736842105263,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.9952830188679245,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.7950310559006211,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 0.9259259259259259,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.9946236559139785,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.970108695652174,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9996213145793887,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.993127147766323,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 124.96780652087182
+        },
+        {
+          "epoch": 10,
+          "loss": 0.5830099340591821,
+          "orig_val": {
+            "acc": 0.9292710141333994,
+            "bal_acc": 0.8224178165453655,
+            "f1_macro": 0.8217955726978181,
+            "null_acc": 0.7616538556905529,
+            "n_test": 16132,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.8269617706237424,
+                "n": 497
+              },
+              "Bleeding": {
+                "recall": 0.8133704735376045,
+                "n": 359
+              },
+              "Erosion": {
+                "recall": 0.651082251082251,
+                "n": 1155
+              },
+              "Erythema": {
+                "recall": 0.5757575757575758,
+                "n": 297
+              },
+              "Foreign Body": {
+                "recall": 0.8705882352941177,
+                "n": 340
+              },
+              "Lymphangiectasia": {
+                "recall": 0.8163265306122449,
+                "n": 343
+              },
+              "Normal": {
+                "recall": 0.9835598600146497,
+                "n": 12287
+              },
+              "Polyp": {
+                "recall": 0.718,
+                "n": 500
+              },
+              "Ulcer": {
+                "recall": 0.9685314685314685,
+                "n": 286
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 68
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 11581,
+                "bal_acc": 0.9434209981438375,
+                "acc": 0.9925740436922545,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.9769230769230769,
+                    "n": 260
+                  },
+                  "Bleeding": {
+                    "recall": 0.9850746268656716,
+                    "n": 134
+                  },
+                  "Erosion": {
+                    "recall": 0.7697368421052632,
+                    "n": 152
+                  },
+                  "Erythema": {
+                    "recall": 0.8958333333333334,
+                    "n": 48
+                  },
+                  "Foreign Body": {
+                    "recall": 0.9527896995708155,
+                    "n": 233
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.9269662921348315,
+                    "n": 178
+                  },
+                  "Normal": {
+                    "recall": 0.9990293146961755,
+                    "n": 10302
+                  },
+                  "Polyp": {
+                    "recall": 1.0,
+                    "n": 17
+                  },
+                  "Ulcer": {
+                    "recall": 0.9844357976653697,
+                    "n": 257
+                  }
+                }
+              },
+              "SEE-AI": {
+                "n": 4289,
+                "bal_acc": 0.6888020769662462,
+                "acc": 0.7579855444159478,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.6578947368421053,
+                    "n": 228
+                  },
+                  "Bleeding": {
+                    "recall": 0.7085201793721974,
+                    "n": 223
+                  },
+                  "Erosion": {
+                    "recall": 0.6331006979062812,
+                    "n": 1003
+                  },
+                  "Erythema": {
+                    "recall": 0.5140562248995983,
+                    "n": 249
+                  },
+                  "Foreign Body": {
+                    "recall": 0.6915887850467289,
+                    "n": 107
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6975308641975309,
+                    "n": 162
+                  },
+                  "Normal": {
+                    "recall": 0.8983234180638183,
+                    "n": 1849
+                  },
+                  "Polyp": {
+                    "recall": 0.7094017094017094,
+                    "n": 468
+                  }
+                }
+              },
+              "KID": {
+                "n": 165,
+                "bal_acc": 0.8163398692810457,
+                "acc": 0.9272727272727272,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.7777777777777778,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9705882352941176,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6666666666666666,
+                    "n": 15
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 97,
+                "bal_acc": 0.9137931034482758,
+                "acc": 0.9484536082474226,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8275862068965517,
+                    "n": 29
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 68
+                  }
+                }
+              }
+            }
+          },
+          "dedup_val": {
+            "acc": 0.7935737401756819,
+            "bal_acc": 0.7643260284747551,
+            "f1_macro": 0.7713176702701389,
+            "null_acc": 0.45792880258899676,
+            "n_test": 4326,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.6695652173913044,
+                "n": 230
+              },
+              "Bleeding": {
+                "recall": 0.7806122448979592,
+                "n": 196
+              },
+              "Erosion": {
+                "recall": 0.6681270536692223,
+                "n": 913
+              },
+              "Erythema": {
+                "recall": 0.5576036866359447,
+                "n": 217
+              },
+              "Foreign Body": {
+                "recall": 0.7789473684210526,
+                "n": 95
+              },
+              "Lymphangiectasia": {
+                "recall": 0.7161290322580646,
+                "n": 155
+              },
+              "Normal": {
+                "recall": 0.9030792529025744,
+                "n": 1981
+              },
+              "Polyp": {
+                "recall": 0.7477678571428571,
+                "n": 448
+              },
+              "Ulcer": {
+                "recall": 0.8214285714285714,
+                "n": 28
+              },
+              "Worms": {
+                "recall": 1.0,
+                "n": 63
+              }
+            },
+            "per_source": {
+              "KVASIR": {
+                "n": 0,
+                "bal_acc": null,
+                "acc": null,
+                "per_class": {}
+              },
+              "SEE-AI": {
+                "n": 4071,
+                "bal_acc": 0.7268184141439107,
+                "acc": 0.7848194546794399,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.665158371040724,
+                    "n": 221
+                  },
+                  "Bleeding": {
+                    "recall": 0.7783505154639175,
+                    "n": 194
+                  },
+                  "Erosion": {
+                    "recall": 0.6681270536692223,
+                    "n": 913
+                  },
+                  "Erythema": {
+                    "recall": 0.5576036866359447,
+                    "n": 217
+                  },
+                  "Foreign Body": {
+                    "recall": 0.7789473684210526,
+                    "n": 95
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.7171052631578947,
+                    "n": 152
+                  },
+                  "Normal": {
+                    "recall": 0.8981029810298103,
+                    "n": 1845
+                  },
+                  "Polyp": {
+                    "recall": 0.7511520737327189,
+                    "n": 434
+                  }
+                }
+              },
+              "KID": {
+                "n": 164,
+                "bal_acc": 0.811577964519141,
+                "acc": 0.926829268292683,
+                "per_class": {
+                  "Angioectasia": {
+                    "recall": 0.7777777777777778,
+                    "n": 9
+                  },
+                  "Bleeding": {
+                    "recall": 1.0,
+                    "n": 2
+                  },
+                  "Lymphangiectasia": {
+                    "recall": 0.6666666666666666,
+                    "n": 3
+                  },
+                  "Normal": {
+                    "recall": 0.9705882352941176,
+                    "n": 136
+                  },
+                  "Polyp": {
+                    "recall": 0.6428571428571429,
+                    "n": 14
+                  }
+                }
+              },
+              "AIIMS": {
+                "n": 91,
+                "bal_acc": 0.9107142857142857,
+                "acc": 0.945054945054945,
+                "per_class": {
+                  "Ulcer": {
+                    "recall": 0.8214285714285714,
+                    "n": 28
+                  },
+                  "Worms": {
+                    "recall": 1.0,
+                    "n": 63
+                  }
+                }
+              }
+            }
+          },
+          "kvasir_s1": {
+            "acc": 0.997737111373475,
+            "bal_acc": 0.9705496084156074,
+            "f1_macro": 0.9748374172455694,
+            "null_acc": 0.9093368752459662,
+            "n_test": 20328,
+            "per_class": {
+              "Angioectasia": {
+                "recall": 0.9894736842105263,
+                "n": 95
+              },
+              "Bleeding": {
+                "recall": 0.9952830188679245,
+                "n": 424
+              },
+              "Erosion": {
+                "recall": 0.8509316770186336,
+                "n": 161
+              },
+              "Erythema": {
+                "recall": 0.9629629629629629,
+                "n": 27
+              },
+              "Foreign Body": {
+                "recall": 0.989247311827957,
+                "n": 186
+              },
+              "Lymphangiectasia": {
+                "recall": 0.9836956521739131,
+                "n": 368
+              },
+              "Normal": {
+                "recall": 0.9996754124966188,
+                "n": 18485
+              },
+              "Polyp": {
+                "recall": null,
+                "n": 0
+              },
+              "Ulcer": {
+                "recall": 0.993127147766323,
+                "n": 582
+              },
+              "Worms": {
+                "recall": null,
+                "n": 0
+              }
+            }
+          },
+          "train_s": 121.35591762000695
+        }
+      ],
+      "last": {
+        "epoch": 10,
+        "loss": 0.5830099340591821,
+        "orig_val": {
+          "acc": 0.9292710141333994,
+          "bal_acc": 0.8224178165453655,
+          "f1_macro": 0.8217955726978181,
+          "null_acc": 0.7616538556905529,
+          "n_test": 16132,
+          "per_class": {
+            "Angioectasia": {
+              "recall": 0.8269617706237424,
+              "n": 497
+            },
+            "Bleeding": {
+              "recall": 0.8133704735376045,
+              "n": 359
+            },
+            "Erosion": {
+              "recall": 0.651082251082251,
+              "n": 1155
+            },
+            "Erythema": {
+              "recall": 0.5757575757575758,
+              "n": 297
+            },
+            "Foreign Body": {
+              "recall": 0.8705882352941177,
+              "n": 340
+            },
+            "Lymphangiectasia": {
+              "recall": 0.8163265306122449,
+              "n": 343
+            },
+            "Normal": {
+              "recall": 0.9835598600146497,
+              "n": 12287
+            },
+            "Polyp": {
+              "recall": 0.718,
+              "n": 500
+            },
+            "Ulcer": {
+              "recall": 0.9685314685314685,
+              "n": 286
+            },
+            "Worms": {
+              "recall": 1.0,
+              "n": 68
+            }
+          },
+          "per_source": {
+            "KVASIR": {
+              "n": 11581,
+              "bal_acc": 0.9434209981438375,
+              "acc": 0.9925740436922545,
+              "per_class": {
+                "Angioectasia": {
+                  "recall": 0.9769230769230769,
+                  "n": 260
+                },
+                "Bleeding": {
+                  "recall": 0.9850746268656716,
+                  "n": 134
+                },
+                "Erosion": {
+                  "recall": 0.7697368421052632,
+                  "n": 152
+                },
+                "Erythema": {
+                  "recall": 0.8958333333333334,
+                  "n": 48
+                },
+                "Foreign Body": {
+                  "recall": 0.9527896995708155,
+                  "n": 233
+                },
+                "Lymphangiectasia": {
+                  "recall": 0.9269662921348315,
+                  "n": 178
+                },
+                "Normal": {
+                  "recall": 0.9990293146961755,
+                  "n": 10302
+                },
+                "Polyp": {
+                  "recall": 1.0,
+                  "n": 17
+                },
+                "Ulcer": {
+                  "recall": 0.9844357976653697,
+                  "n": 257
+                }
+              }
+            },
+            "SEE-AI": {
+              "n": 4289,
+              "bal_acc": 0.6888020769662462,
+              "acc": 0.7579855444159478,
+              "per_class": {
+                "Angioectasia": {
+                  "recall": 0.6578947368421053,
+                  "n": 228
+                },
+                "Bleeding": {
+                  "recall": 0.7085201793721974,
+                  "n": 223
+                },
+                "Erosion": {
+                  "recall": 0.6331006979062812,
+                  "n": 1003
+                },
+                "Erythema": {
+                  "recall": 0.5140562248995983,
+                  "n": 249
+                },
+                "Foreign Body": {
+                  "recall": 0.6915887850467289,
+                  "n": 107
+                },
+                "Lymphangiectasia": {
+                  "recall": 0.6975308641975309,
+                  "n": 162
+                },
+                "Normal": {
+                  "recall": 0.8983234180638183,
+                  "n": 1849
+                },
+                "Polyp": {
+                  "recall": 0.7094017094017094,
+                  "n": 468
+                }
+              }
+            },
+            "KID": {
+              "n": 165,
+              "bal_acc": 0.8163398692810457,
+              "acc": 0.9272727272727272,
+              "per_class": {
+                "Angioectasia": {
+                  "recall": 0.7777777777777778,
+                  "n": 9
+                },
+                "Bleeding": {
+                  "recall": 1.0,
+                  "n": 2
+                },
+                "Lymphangiectasia": {
+                  "recall": 0.6666666666666666,
+                  "n": 3
+                },
+                "Normal": {
+                  "recall": 0.9705882352941176,
+                  "n": 136
+                },
+                "Polyp": {
+                  "recall": 0.6666666666666666,
+                  "n": 15
+                }
+              }
+            },
+            "AIIMS": {
+              "n": 97,
+              "bal_acc": 0.9137931034482758,
+              "acc": 0.9484536082474226,
+              "per_class": {
+                "Ulcer": {
+                  "recall": 0.8275862068965517,
+                  "n": 29
+                },
+                "Worms": {
+                  "recall": 1.0,
+                  "n": 68
+                }
+              }
+            }
+          }
+        },
+        "dedup_val": {
+          "acc": 0.7935737401756819,
+          "bal_acc": 0.7643260284747551,
+          "f1_macro": 0.7713176702701389,
+          "null_acc": 0.45792880258899676,
+          "n_test": 4326,
+          "per_class": {
+            "Angioectasia": {
+              "recall": 0.6695652173913044,
+              "n": 230
+            },
+            "Bleeding": {
+              "recall": 0.7806122448979592,
+              "n": 196
+            },
+            "Erosion": {
+              "recall": 0.6681270536692223,
+              "n": 913
+            },
+            "Erythema": {
+              "recall": 0.5576036866359447,
+              "n": 217
+            },
+            "Foreign Body": {
+              "recall": 0.7789473684210526,
+              "n": 95
+            },
+            "Lymphangiectasia": {
+              "recall": 0.7161290322580646,
+              "n": 155
+            },
+            "Normal": {
+              "recall": 0.9030792529025744,
+              "n": 1981
+            },
+            "Polyp": {
+              "recall": 0.7477678571428571,
+              "n": 448
+            },
+            "Ulcer": {
+              "recall": 0.8214285714285714,
+              "n": 28
+            },
+            "Worms": {
+              "recall": 1.0,
+              "n": 63
+            }
+          },
+          "per_source": {
+            "KVASIR": {
+              "n": 0,
+              "bal_acc": null,
+              "acc": null,
+              "per_class": {}
+            },
+            "SEE-AI": {
+              "n": 4071,
+              "bal_acc": 0.7268184141439107,
+              "acc": 0.7848194546794399,
+              "per_class": {
+                "Angioectasia": {
+                  "recall": 0.665158371040724,
+                  "n": 221
+                },
+                "Bleeding": {
+                  "recall": 0.7783505154639175,
+                  "n": 194
+                },
+                "Erosion": {
+                  "recall": 0.6681270536692223,
+                  "n": 913
+                },
+                "Erythema": {
+                  "recall": 0.5576036866359447,
+                  "n": 217
+                },
+                "Foreign Body": {
+                  "recall": 0.7789473684210526,
+                  "n": 95
+                },
+                "Lymphangiectasia": {
+                  "recall": 0.7171052631578947,
+                  "n": 152
+                },
+                "Normal": {
+                  "recall": 0.8981029810298103,
+                  "n": 1845
+                },
+                "Polyp": {
+                  "recall": 0.7511520737327189,
+                  "n": 434
+                }
+              }
+            },
+            "KID": {
+              "n": 164,
+              "bal_acc": 0.811577964519141,
+              "acc": 0.926829268292683,
+              "per_class": {
+                "Angioectasia": {
+                  "recall": 0.7777777777777778,
+                  "n": 9
+                },
+                "Bleeding": {
+                  "recall": 1.0,
+                  "n": 2
+                },
+                "Lymphangiectasia": {
+                  "recall": 0.6666666666666666,
+                  "n": 3
+                },
+                "Normal": {
+                  "recall": 0.9705882352941176,
+                  "n": 136
+                },
+                "Polyp": {
+                  "recall": 0.6428571428571429,
+                  "n": 14
+                }
+              }
+            },
+            "AIIMS": {
+              "n": 91,
+              "bal_acc": 0.9107142857142857,
+              "acc": 0.945054945054945,
+              "per_class": {
+                "Ulcer": {
+                  "recall": 0.8214285714285714,
+                  "n": 28
+                },
+                "Worms": {
+                  "recall": 1.0,
+                  "n": 63
+                }
+              }
+            }
+          }
+        },
+        "kvasir_s1": {
+          "acc": 0.997737111373475,
+          "bal_acc": 0.9705496084156074,
+          "f1_macro": 0.9748374172455694,
+          "null_acc": 0.9093368752459662,
+          "n_test": 20328,
+          "per_class": {
+            "Angioectasia": {
+              "recall": 0.9894736842105263,
+              "n": 95
+            },
+            "Bleeding": {
+              "recall": 0.9952830188679245,
+              "n": 424
+            },
+            "Erosion": {
+              "recall": 0.8509316770186336,
+              "n": 161
+            },
+            "Erythema": {
+              "recall": 0.9629629629629629,
+              "n": 27
+            },
+            "Foreign Body": {
+              "recall": 0.989247311827957,
+              "n": 186
+            },
+            "Lymphangiectasia": {
+              "recall": 0.9836956521739131,
+              "n": 368
+            },
+            "Normal": {
+              "recall": 0.9996754124966188,
+              "n": 18485
+            },
+            "Polyp": {
+              "recall": null,
+              "n": 0
+            },
+            "Ulcer": {
+              "recall": 0.993127147766323,
+              "n": 582
+            },
+            "Worms": {
+              "recall": null,
+              "n": 0
+            }
+          }
+        },
+        "train_s": 121.35591762000695
+      }
+    }
+  ]
+}

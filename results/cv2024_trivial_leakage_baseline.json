@@ -1,0 +1,66 @@
+{
+  "description": "Trivial public-validation leakage baseline; not an official-test or replacement leaderboard.",
+  "implementation_constraints": [
+    "Uses training labels and train/validation identity/hash/video-prefix metadata only.",
+    "Does not parse validation class folder names as a prediction signal.",
+    "Scores with CV2024 organizer public-validation metric implementation unchanged."
+  ],
+  "n_train": 37607,
+  "n_validation": 16132,
+  "coverage": {
+    "same_nearest_kvasir_frame": 6464,
+    "fallback_train_prior": 821,
+    "same_source_prefix": 8333,
+    "exact_phash_dhash_train_match": 340,
+    "exact_filename_train_match": 174
+  },
+  "train_prior": {
+    "Angioectasia": 0.03068577658414657,
+    "Bleeding": 0.022176722418698648,
+    "Erosion": 0.0716355997553647,
+    "Erythema": 0.018374238838514106,
+    "Foreign Body": 0.021059909059483607,
+    "Lymphangiectasia": 0.021166272236551705,
+    "Normal": 0.7621719360757305,
+    "Polyp": 0.030898502938282765,
+    "Ulcer": 0.017629696599037414,
+    "Worms": 0.004201345494189912
+  },
+  "annotation_lookup": {
+    "annotation_key": "normalized CV2024 relative image_path",
+    "annotation_rows": 53739,
+    "annotation_duplicate_path_keys": 0,
+    "annotation_misses": {
+      "training": 0,
+      "validation": 0
+    }
+  },
+  "source_prefix_rule": "Only Kvasir 16-hex filename prefixes are used; class-name tokens and unverified source filename stems are denied.",
+  "rules_in_priority_order": [
+    "exact_filename_train_match",
+    "exact_phash_dhash_train_match",
+    "same_nearest_kvasir_frame",
+    "same_source_prefix",
+    "fallback_train_prior"
+  ],
+  "scores": {
+    "orig_public_val": {
+      "n": 16132,
+      "mean_auc": 0.6452845038461057,
+      "balanced_accuracy": 0.28660828674685807,
+      "combined": 0.46594639529648185
+    },
+    "le6": {
+      "n": 4551,
+      "mean_auc": 0.5188846707629343,
+      "balanced_accuracy": 0.12084460952359617,
+      "combined": 0.31986464014326527
+    },
+    "le6_plus_internal": {
+      "n": 4326,
+      "mean_auc": 0.5126066630063225,
+      "balanced_accuracy": 0.10619570021499376,
+      "combined": 0.30940118161065816
+    }
+  }
+}

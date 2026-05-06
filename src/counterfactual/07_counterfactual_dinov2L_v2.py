@@ -1,0 +1,267 @@
+"""Counterfactual re-training on Kvasir-origin-removed CV2024 pool.
+v2 additions:
+ - per_class accuracy saved per eval (for per-class decomposition)
+ - class-stratified matched-control CSV supported (same interface)
+"""
+import argparse
+import csv
+import json
+import sys
+import time
+from collections import defaultdict
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from PIL import Image
+from sklearn.metrics import balanced_accuracy_score, f1_score
+from torch.utils.data import DataLoader
+from torchvision import transforms
+
+import os
+ROOT = Path(os.environ.get("CAPSULE_ROOT", os.environ.get("CAPSULE_TTA_ROOT", Path(__file__).resolve().parents[2]))).resolve()
+OUT = ROOT / "results"
+CV2024_ROOT = Path(os.environ.get("CV2024_ROOT", ROOT / "data/cv2024/Dataset"))
+if (CV2024_ROOT / "Dataset").is_dir():
+    CV2024_ROOT = CV2024_ROOT / "Dataset"
+
+sys.path.insert(0, str(ROOT / "src"))
+import dataset_official as _ds
+_ds.DATA_ROOT = Path(os.environ.get("KVASIR_ROOT", ROOT / "data/kvasir_capsule/labelled_images"))
+if (_ds.DATA_ROOT / "labelled_images").is_dir():
+    _ds.DATA_ROOT = _ds.DATA_ROOT / "labelled_images"
+_ds.SPLITS_DIR = Path(os.environ.get("KVASIR_SPLITS_DIR", ROOT / "data/official_splits"))
+from dataset_official import (
+    KvasirCapsuleOfficial, OFFICIAL_CLASSES, NUM_CLASSES, LABEL_TO_FOLDER,
+)
+
+DEVICE = torch.device("cuda:0")
+
+CV2024_CLASSES = [
+    "Angioectasia", "Bleeding", "Erosion", "Erythema", "Foreign Body",
+    "Lymphangiectasia", "Normal", "Polyp", "Ulcer", "Worms"
+]
+
+TF_TRAIN = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+])
+TF_EVAL = TF_TRAIN
+
+
+class CV2024DS(torch.utils.data.Dataset):
+    def __init__(self, csv_path, classes=CV2024_CLASSES):
+        df = pd.read_csv(csv_path) if str(csv_path).endswith(".csv") \
+             else pd.read_excel(csv_path)
+        label_cols = [c for c in df.columns if c in classes]
+        if not label_cols:
+            raise ValueError(f"No class columns in {csv_path}: "
+                             f"columns are {list(df.columns)[:20]}")
+        df = df[df[label_cols].sum(axis=1) > 0].reset_index(drop=True)
+        self.df = df
+        self.classes = classes
+        self.label_cols = label_cols
+        self.tf = TF_TRAIN
+
+    def __len__(self):
+        return len(self.df)
+
+    def __getitem__(self, idx):
+        row = self.df.iloc[idx]
+        rel = row["image_path"].replace("\\", "/")
+        path = CV2024_ROOT / rel
+        img = Image.open(path).convert("RGB")
+        for i, c in enumerate(self.label_cols):
+            if row[c] == 1:
+                label = self.classes.index(c)
+                break
+        else:
+            label = 0
+        return self.tf(img), label, idx
+
+
+class KvasirEvalDS(torch.utils.data.Dataset):
+    KVASIR_TO_CV = {
+        "Angiectasia": "Angioectasia", "Blood": "Bleeding", "Erosion": "Erosion",
+        "Erythematous": "Erythema", "Foreign Bodies": "Foreign Body",
+        "Lymphangiectasia": "Lymphangiectasia", "Normal": "Normal",
+        "Pylorus": None, "Ileo-cecal valve": None,
+        "Reduced Mucosal View": None, "Ulcer": "Ulcer",
+    }
+
+    def __init__(self):
+        self.items = []
+        with open(_ds.SPLITS_DIR / "split_1.csv") as f:
+            for row in csv.DictReader(f):
+                kv_lbl = row["label"]
+                cv_lbl = self.KVASIR_TO_CV.get(kv_lbl)
+                if cv_lbl is None or cv_lbl not in CV2024_CLASSES:
+                    continue
+                if kv_lbl not in LABEL_TO_FOLDER:
+                    continue
+                folder = LABEL_TO_FOLDER[kv_lbl]
+                path = _ds.DATA_ROOT / folder / row["filename"]
+                self.items.append((str(path), CV2024_CLASSES.index(cv_lbl)))
+
+    def __len__(self): return len(self.items)
+    def __getitem__(self, idx):
+        path, lbl = self.items[idx]
+        return TF_EVAL(Image.open(path).convert("RGB")), lbl, idx
+
+
+class LoRALinear(nn.Module):
+    def __init__(self, base, r=8, alpha=16.0):
+        super().__init__()
+        self.base = base
+        for p in base.parameters(): p.requires_grad = False
+        self.lora_a = nn.Parameter(torch.randn(r, base.in_features) * 0.01)
+        self.lora_b = nn.Parameter(torch.zeros(base.out_features, r))
+        self.scale = alpha / r
+    def forward(self, x):
+        return self.base(x) + F.linear(F.linear(x, self.lora_a), self.lora_b) * self.scale
+
+
+class DINOv2LoRA(nn.Module):
+    def __init__(self, n_cls=10, r=8):
+        super().__init__()
+        self.backbone = torch.hub.load("facebookresearch/dinov2", "dinov2_vitl14")
+        for p in self.backbone.parameters(): p.requires_grad = False
+        self.lora_wrappers = nn.ModuleList()
+        for blk in self.backbone.blocks[-4:]:
+            w = LoRALinear(blk.attn.qkv, r=r); blk.attn.qkv = w
+            self.lora_wrappers.append(w)
+        self.head = nn.Sequential(
+            nn.LayerNorm(1024), nn.Linear(1024, 256),
+            nn.GELU(), nn.Dropout(0.1), nn.Linear(256, n_cls))
+    def forward(self, x): return self.head(self.backbone(x))
+
+
+def cbw(labels, n, beta=0.999):
+    c = torch.bincount(labels, minlength=n).float()
+    e = 1.0 - torch.pow(beta, c); e[c == 0] = 1.0
+    w = (1.0 - beta) / e; w = w / w.sum() * n; w[c == 0] = 0
+    return w
+
+
+@torch.no_grad()
+def ev(m, loader):
+    """Evaluate + return per-class recall for r4 decomposition."""
+    m.eval()
+    P, L = [], []
+    for img, l, _ in loader:
+        img = img.to(DEVICE, non_blocking=True)
+        with torch.amp.autocast("cuda", dtype=torch.float16):
+            lg = m(img)
+        P.extend(lg.argmax(1).cpu().tolist())
+        L.extend(l.tolist())
+    P, L = np.array(P), np.array(L)
+    mj = int(np.bincount(L).argmax()) if len(L) else 0
+    # per-class recall
+    per_class = {}
+    for c_idx, c_name in enumerate(CV2024_CLASSES):
+        mask = (L == c_idx)
+        n_c = int(mask.sum())
+        if n_c > 0:
+            per_class[c_name] = {
+                "n": n_c,
+                "recall": float((P[mask] == c_idx).mean()),
+            }
+        else:
+            per_class[c_name] = {"n": 0, "recall": 0.0}
+    return {"acc": float((P == L).mean()),
+            "bal_acc": float(balanced_accuracy_score(L, P)),
+            "f1_macro": float(f1_score(L, P, average="macro", zero_division=0)),
+            "null_acc": float((np.full_like(L, mj) == L).mean()),
+            "n_test": len(L),
+            "per_class": per_class}
+
+
+def train_one_seed(train_csv, seed, args, orig_val_csv, dedup_val_csv):
+    torch.manual_seed(seed); np.random.seed(seed)
+    tr = CV2024DS(train_csv)
+    n = len(tr)
+    labels = torch.tensor([tr.classes.index(
+        [c for c in tr.label_cols if tr.df.iloc[i][c] == 1][0])
+        for i in range(n)])
+    w = cbw(labels, len(CV2024_CLASSES)).to(DEVICE)
+    loss_fn = nn.CrossEntropyLoss(weight=w, label_smoothing=0.05)
+
+    ltr = DataLoader(tr, batch_size=args.batch, shuffle=True, num_workers=6,
+                     pin_memory=True, persistent_workers=True, drop_last=True)
+    orig_val = CV2024DS(orig_val_csv)
+    dedup_val = CV2024DS(dedup_val_csv)
+    kv_test = KvasirEvalDS()
+    l_ov = DataLoader(orig_val, batch_size=args.batch*2, shuffle=False, num_workers=6)
+    l_dv = DataLoader(dedup_val, batch_size=args.batch*2, shuffle=False, num_workers=6)
+    l_kt = DataLoader(kv_test, batch_size=args.batch*2, shuffle=False, num_workers=6)
+    print(f"  Train={n} OrigVal={len(orig_val)} DedupVal={len(dedup_val)} KvasirTest={len(kv_test)}",
+          flush=True)
+
+    model = DINOv2LoRA(n_cls=len(CV2024_CLASSES)).to(DEVICE)
+    if torch.cuda.device_count() > 1:
+        m = nn.DataParallel(model)
+    else:
+        m = model
+    lora = [p for wr in model.lora_wrappers for p in [wr.lora_a, wr.lora_b]]
+    head = list(model.head.parameters())
+    scaler = torch.amp.GradScaler("cuda")
+    history = []
+    for ep in range(args.epochs):
+        groups = [{"params": head, "lr": 3e-4}]
+        if ep >= 3:
+            groups.append({"params": lora, "lr": 1e-4})
+        opt = torch.optim.AdamW(groups, weight_decay=1e-4)
+        m.train()
+        losses = []
+        t0 = time.perf_counter()
+        for img, l, _ in ltr:
+            img, l = img.to(DEVICE, non_blocking=True), l.to(DEVICE, non_blocking=True)
+            with torch.amp.autocast("cuda", dtype=torch.float16):
+                lg = m(img); loss = loss_fn(lg, l)
+            opt.zero_grad(); scaler.scale(loss).backward()
+            scaler.step(opt); scaler.update()
+            losses.append(loss.item())
+        met_ov = ev(m, l_ov)
+        met_dv = ev(m, l_dv)
+        met_kt = ev(m, l_kt)
+        dt = time.perf_counter() - t0
+        print(f"  [seed={seed} ep={ep+1}] orig_val bal={met_ov['bal_acc']:.4f} "
+              f"| dedup_val bal={met_dv['bal_acc']:.4f} "
+              f"| kvasir_s1 bal={met_kt['bal_acc']:.4f} [{dt:.0f}s]", flush=True)
+        history.append({"epoch": ep+1, "loss": float(np.mean(losses)),
+                        "orig_val": met_ov, "dedup_val": met_dv, "kvasir_s1": met_kt,
+                        "train_s": float(dt)})
+    return history
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--train_csv", required=True)
+    ap.add_argument("--orig_val_csv", default=str(CV2024_ROOT / "validation/validation_data.xlsx"))
+    ap.add_argument("--dedup_val_csv", required=True)
+    ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1])
+    ap.add_argument("--epochs", type=int, default=10)
+    ap.add_argument("--batch", type=int, default=128)
+    ap.add_argument("--output", required=True)
+    args = ap.parse_args()
+    print(f"Args: {vars(args)}", flush=True)
+
+    results = {"args": vars(args), "runs": []}
+    for seed in args.seeds:
+        print(f"\n=== seed={seed} ===", flush=True)
+        history = train_one_seed(args.train_csv, seed, args,
+                                 args.orig_val_csv, args.dedup_val_csv)
+        results["runs"].append({"seed": seed, "history": history,
+                                "last": history[-1]})
+        with open(OUT / args.output, "w") as f:
+            json.dump(results, f, indent=2, default=str)
+
+    print(f"\nSaved {OUT / args.output}", flush=True)
+
+
+if __name__ == "__main__":
+    main()
