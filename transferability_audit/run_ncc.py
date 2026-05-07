@@ -99,13 +99,30 @@ def main():
     for i, sa in enumerate(sources):
         for sb in sources[i + 1:]:
             cross_pairs[f"{sa}__{sb}"] = pairs_le6(by_source[sa], by_source[sb])
+    # Full unordered i<j intra-source enumeration (no split-pair approx)
     for s in sources:
-        n = len(by_source[s])
-        if n > 5000:
-            half = n // 2
-            intra_pairs[s] = pairs_le6(by_source[s][:half], by_source[s][half:])
-        else:
-            intra_pairs[s] = pairs_le6(by_source[s], by_source[s])
+        rows_s = by_source[s]
+        n = len(rows_s)
+        p_arr = np.array([hex_to_u64(r["phash"]) for r in rows_s], dtype=np.uint64)
+        d_arr = np.array([hex_to_u64(r["dhash"]) for r in rows_s], dtype=np.uint64)
+        chunk = 256
+        out = []
+        for s_idx in range(0, n, chunk):
+            e_idx = min(s_idx + chunk, n)
+            ph_xor = p_arr[s_idx:e_idx, None] ^ p_arr[None, :]
+            dh_xor = d_arr[s_idx:e_idx, None] ^ d_arr[None, :]
+            joint = popcount64(ph_xor) + popcount64(dh_xor)
+            rows_idx = np.arange(s_idx, e_idx)[:, None]
+            cols_idx = np.arange(n)[None, :]
+            mask_lower = rows_idx < cols_idx
+            le = (joint <= 6) & mask_lower
+            ai, bi = np.where(le)
+            for i_local, j in zip(ai, bi):
+                ig = s_idx + int(i_local)
+                jg = int(j)
+                out.append((rows_s[ig]["image_id"], rows_s[jg]["image_id"],
+                            int(joint[i_local, j])))
+        intra_pairs[s] = out
 
     # Cache loaded images
     cache: dict[str, np.ndarray] = {}

@@ -99,28 +99,41 @@ def main():
             ]
             print(f"    joint<={args.threshold}: {len(pairs)} pairs", file=sys.stderr)
 
-    # Intra-source joint <= 6
+    # Intra-source joint <= 6 — full unordered i<j enumeration
     intra_pair_counts = {}
     intra_pairs_examples = {}
     for s in sources:
-        n = len(by_source[s])
-        if n > 5000:
-            # split in half to avoid O(N^2) memory blowup
-            half = n // 2
-            a = by_source[s][:half]
-            b = by_source[s][half:]
-            print(f"  Intra-source: {s} (split-pair {len(a)} x {len(b)})", file=sys.stderr)
-            pairs = cross_source_le6(a, b, threshold=args.threshold)
-        else:
-            print(f"  Intra-source: {s} ({n} self-pair)", file=sys.stderr)
-            pairs = cross_source_le6(by_source[s], by_source[s], threshold=args.threshold)
-            # remove self-matches (a == b)
-            pairs = [(a, b, j) for a, b, j in pairs if a != b]
-        intra_pair_counts[s] = len(pairs)
+        rows_s = by_source[s]
+        n = len(rows_s)
+        print(f"  Intra-source: {s} (n={n}, full unordered i<j enumeration)",
+              file=sys.stderr)
+        # Build chunked pairwise mask, count i<j pairs with joint<=threshold.
+        p_arr = np.array([hex_to_u64(r["phash"]) for r in rows_s], dtype=np.uint64)
+        d_arr = np.array([hex_to_u64(r["dhash"]) for r in rows_s], dtype=np.uint64)
+        chunk = 256
+        unordered_pairs = []
+        for s_idx in range(0, n, chunk):
+            e_idx = min(s_idx + chunk, n)
+            ph_xor = p_arr[s_idx:e_idx, None] ^ p_arr[None, :]
+            dh_xor = d_arr[s_idx:e_idx, None] ^ d_arr[None, :]
+            joint = popcount64(ph_xor) + popcount64(dh_xor)
+            rows_idx = np.arange(s_idx, e_idx)[:, None]
+            cols_idx = np.arange(n)[None, :]
+            mask_lower = rows_idx < cols_idx
+            le = (joint <= args.threshold) & mask_lower
+            ai, bi = np.where(le)
+            for i_local, j in zip(ai, bi):
+                ig = s_idx + int(i_local)
+                jg = int(j)
+                unordered_pairs.append(
+                    (rows_s[ig]["image_id"], rows_s[jg]["image_id"],
+                     int(joint[i_local, j])))
+        intra_pair_counts[s] = len(unordered_pairs)
         intra_pairs_examples[s] = [
-            {"a": a, "b": b, "joint": j} for a, b, j in pairs[:20]
+            {"a": a, "b": b, "joint": j} for a, b, j in unordered_pairs[:20]
         ]
-        print(f"    joint<={args.threshold}: {len(pairs)} pairs", file=sys.stderr)
+        print(f"    unordered joint<={args.threshold}: {len(unordered_pairs)} pairs",
+              file=sys.stderr)
 
     n_total = sum(len(v) for v in by_source.values())
     cross_total = sum(cross_pair_counts.values())

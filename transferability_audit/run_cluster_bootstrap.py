@@ -87,6 +87,45 @@ def main():
     print(f"\nFrame-level Wilson 95% CI (anti-conservative): "
           f"[{100*(center-half):.3f}%, {100*(center+half):.3f}%]")
 
+    # BCa CI (bias-corrected and accelerated) — needs jackknife
+    point = k_total / n_total
+    z0 = stats.norm.ppf((rates < point).mean()) if (rates < point).any() else 0.0
+    # Jackknife: leave-one-video-out
+    jack_rates = []
+    for v in videos:
+        mask = [vid for vid in videos if vid != v]
+        n_j = sum(per_video[vv]["n"] for vv in mask)
+        k_j = sum(per_video[vv]["k"] for vv in mask)
+        jack_rates.append(k_j / n_j if n_j > 0 else 0.0)
+    jack_rates = np.array(jack_rates)
+    jack_mean = jack_rates.mean()
+    num = ((jack_mean - jack_rates) ** 3).sum()
+    den = 6.0 * (((jack_mean - jack_rates) ** 2).sum() ** 1.5)
+    accel = num / den if den != 0 else 0.0
+    z_alpha_lo = stats.norm.ppf(0.025)
+    z_alpha_hi = stats.norm.ppf(0.975)
+    alpha_lo_adj = stats.norm.cdf(z0 + (z0 + z_alpha_lo) / (1 - accel * (z0 + z_alpha_lo)))
+    alpha_hi_adj = stats.norm.cdf(z0 + (z0 + z_alpha_hi) / (1 - accel * (z0 + z_alpha_hi)))
+    bca_lo = float(np.quantile(rates, alpha_lo_adj))
+    bca_hi = float(np.quantile(rates, alpha_hi_adj))
+    print(f"  BCa CI: [{100*bca_lo:.3f}%, {100*bca_hi:.3f}%]")
+
+    # Leave-cluster-out
+    sorted_v = sorted(videos, key=lambda v: -per_video[v]["k"])
+    drop_summary = {}
+    cur_n, cur_k = n_total, k_total
+    for k_drop in range(1, 4):
+        v = sorted_v[k_drop - 1]
+        cur_n -= per_video[v]["n"]
+        cur_k -= per_video[v]["k"]
+        drop_summary[f"drop_top_{k_drop}"] = {
+            "rate_pct": round(100 * cur_k / cur_n, 4),
+            "n": cur_n,
+            "k": cur_k,
+            "videos_dropped": [vid for vid in sorted_v[:k_drop]],
+        }
+        print(f"  Drop top-{k_drop}: {100*cur_k/cur_n:.3f}%")
+
     out = {
         "n_videos": n_videos,
         "n_val_frames": n_total,
@@ -98,6 +137,9 @@ def main():
             "median_pct": round(100 * pct_median, 4),
             "ci_2.5_pct": round(100 * pct_lo, 4),
             "ci_97.5_pct": round(100 * pct_hi, 4),
+            "bca_2.5_pct": round(100 * bca_lo, 4),
+            "bca_97.5_pct": round(100 * bca_hi, 4),
+            "leave_cluster_out": drop_summary,
         },
         "frame_level_wilson_ci_pct": [
             round(100 * (center - half), 4),
