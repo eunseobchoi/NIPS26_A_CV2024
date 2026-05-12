@@ -1,0 +1,259 @@
+From c93bcb01dbc8d4665cf22e0c051f11e65c4da520 Mon Sep 17 00:00:00 2001
+From: Samuel <eunseobchoi@users.noreply.github.com>
+Date: Tue, 12 May 2026 09:27:42 +0900
+Subject: [PATCH] Keep submission tests from overriding scenario contracts
+
+Submission verification and measurement must treat scenario-owned cape-tests.json files as the benchmark contract. A submission-local cape-tests.json now fails fast instead of replacing the trusted scenario tests, and the regression suite covers the rejection before the evaluator can run.
+
+Constraint: GHSA-4rp3-v4vj-q537 reports that evaluatee-supplied tests can bias verification and benchmark results
+
+Rejected: Silently ignore submission-local cape-tests.json | anomalous files would remain accepted in submissions and keep confusing reviewers
+
+Confidence: high
+
+Scope-risk: moderate
+
+Directive: Do not reintroduce submission-local test overrides; add trusted scenario-level fixtures instead
+
+Tested: git diff --check
+
+Tested: bash -n scripts/lib/cape_common.sh scripts/cape-subcommands/submission/verify.sh scripts/cape-subcommands/submission/measure.sh scripts/cape-subcommands/test/test.sh
+
+Tested: Stubbed verify/measure regression rejects submission-local cape-tests.json before invoking measure
+
+Tested: Stubbed successful verify path passes scenarios/fibonacci/cape-tests.json to measure
+
+Not-tested: Full cabal test suite; cabal and check-jsonschema are not installed in this environment
+---
+ .../cape-subcommands/submission/measure.sh    | 40 ++++++-----
+ scripts/cape-subcommands/submission/verify.sh | 35 +++++-----
+ scripts/cape-subcommands/test/test.sh         | 70 +++++++++++++++++++
+ scripts/lib/cape_common.sh                    | 13 ++++
+ 4 files changed, 120 insertions(+), 38 deletions(-)
+
+diff --git a/scripts/cape-subcommands/submission/measure.sh b/scripts/cape-subcommands/submission/measure.sh
+index 2696e1d..26dd8bd 100755
+--- a/scripts/cape-subcommands/submission/measure.sh
++++ b/scripts/cape-subcommands/submission/measure.sh
+@@ -96,30 +96,27 @@ measure_uplc_file() {
+   scenario="$(infer_scenario_from_path "$uplc_file")"
+ 
+   local tests_flag=()
+-  # Prefer a submission-local cape-tests.json when available
+   local submission_dir
+   submission_dir="$(dirname "$uplc_file")"
+-  local submission_tests="$submission_dir/cape-tests.json"
+-  if [[ -f "$submission_tests" ]]; then
+-    cape_debug "Using submission tests: $(cape_relpath "$submission_tests")"
+-    tests_flag+=("-t" "$submission_tests")
+-  else
+-    if [[ -n "$scenario" ]]; then
+-      local tests_file
+-      tests_file="$(resolve_tests_for_scenario "$scenario")"
+-      if [[ -n "$tests_file" ]]; then
+-        cape_debug "Using scenario tests: $(cape_relpath "$tests_file")"
+-        tests_flag+=("-t" "$tests_file")
+-      else
+-        cape_error "No cape-tests.json found for scenario '$scenario'. Test specification is required."
+-        cape_error "Create scenarios/$scenario/cape-tests.json with test cases."
+-        exit 1
+-      fi
++  if ! cape_reject_submission_tests_file "$submission_dir"; then
++    return 1
++  fi
++
++  if [[ -n "$scenario" ]]; then
++    local tests_file
++    tests_file="$(resolve_tests_for_scenario "$scenario")"
++    if [[ -n "$tests_file" ]]; then
++      cape_debug "Using scenario tests: $(cape_relpath "$tests_file")"
++      tests_flag+=("-t" "$tests_file")
+     else
+-      cape_error "Unable to infer scenario for $rel_uplc. Test specification is required."
+-      cape_error "Ensure the UPLC file is in a proper submission directory structure."
++      cape_error "No cape-tests.json found for scenario '$scenario'. Test specification is required."
++      cape_error "Create scenarios/$scenario/cape-tests.json with test cases."
+       exit 1
+     fi
++  else
++    cape_error "Unable to infer scenario for $rel_uplc. Test specification is required."
++    cape_error "Ensure the UPLC file is in a proper submission directory structure."
++    exit 1
+   fi
+ 
+   local tmp_raw stdout_tmp
+@@ -261,6 +258,11 @@ measure_preview_submissions() {
+     rel_path="${submission_dir#$SUBMISSIONS_ROOT/}"
+     cape_info "Measuring preview submission: submissions/${rel_path}"
+ 
++    if ! cape_reject_submission_tests_file "$submission_dir"; then
++      overall_errors=1
++      continue
++    fi
++
+     # Find UPLC file
+     local uplc_file
+     uplc_file=$(find "$submission_dir" -maxdepth 1 -name "*.uplc" -type f | head -1)
+diff --git a/scripts/cape-subcommands/submission/verify.sh b/scripts/cape-subcommands/submission/verify.sh
+index 1e67537..4d6dbdb 100755
+--- a/scripts/cape-subcommands/submission/verify.sh
++++ b/scripts/cape-subcommands/submission/verify.sh
+@@ -83,28 +83,25 @@ verify_submission_dir() {
+ 
+   local tests_flag=()
+ 
+-  # Prefer a submission-local cape-tests.json when available
+-  local submission_tests="$submission_dir/cape-tests.json"
+-  if [[ -f "$submission_tests" ]]; then
+-    cape_debug "Using submission tests: $(cape_relpath "$submission_tests")"
+-    tests_flag+=("-t" "$submission_tests")
+-  else
+-    if [[ -n "$scenario" ]]; then
+-      local tests_file
+-      tests_file="$(resolve_tests_for_scenario "$scenario")"
+-      if [[ -n "$tests_file" ]]; then
+-        cape_debug "Using scenario tests: $(cape_relpath "$tests_file")"
+-        tests_flag+=("-t" "$tests_file")
+-      else
+-        cape_error "No cape-tests.json found for scenario '$scenario'. Test specification is required."
+-        cape_error "Create scenarios/$scenario/cape-tests.json with test cases."
+-        return 1
+-      fi
++  if ! cape_reject_submission_tests_file "$submission_dir"; then
++    return 1
++  fi
++
++  if [[ -n "$scenario" ]]; then
++    local tests_file
++    tests_file="$(resolve_tests_for_scenario "$scenario")"
++    if [[ -n "$tests_file" ]]; then
++      cape_debug "Using scenario tests: $(cape_relpath "$tests_file")"
++      tests_flag+=("-t" "$tests_file")
+     else
+-      cape_error "Unable to infer scenario for $rel_dir. Test specification is required."
+-      cape_error "Ensure submission follows the correct directory structure."
++      cape_error "No cape-tests.json found for scenario '$scenario'. Test specification is required."
++      cape_error "Create scenarios/$scenario/cape-tests.json with test cases."
+       return 1
+     fi
++  else
++    cape_error "Unable to infer scenario for $rel_dir. Test specification is required."
++    cape_error "Ensure submission follows the correct directory structure."
++    return 1
+   fi
+ 
+   local tmp_metrics tmp_stdout
+diff --git a/scripts/cape-subcommands/test/test.sh b/scripts/cape-subcommands/test/test.sh
+index 0d4745a..c30081d 100755
+--- a/scripts/cape-subcommands/test/test.sh
++++ b/scripts/cape-subcommands/test/test.sh
+@@ -162,6 +162,74 @@ run_uplc_validation() {
+   fi
+ }
+ 
++run_submission_tests_file_regression() {
++  if [[ -t 1 && -z "${NO_COLOR:-}" ]]; then
++    echo -e "\033[0;34mINFO:\033[0m Testing submission-local cape-tests.json rejection..."
++  else
++    echo "INFO: Testing submission-local cape-tests.json rejection..."
++  fi
++
++  local fixture="$SANDBOX_DIR/submissions/fibonacci/Scalus_0.12.1_Unisay"
++  local local_tests="$fixture/cape-tests.json"
++  local stub_bin="$TEST_TMP_DIR/security-stub-bin"
++  local marker="$TEST_TMP_DIR/measure-was-called"
++
++  mkdir -p "$stub_bin"
++  cat > "$stub_bin/cabal" <<'EOF'
++#!/usr/bin/env bash
++exit 0
++EOF
++  cat > "$stub_bin/check-jsonschema" <<'EOF'
++#!/usr/bin/env bash
++printf '{"status":"ok","errors":[]}\n'
++EOF
++  cat > "$stub_bin/measure" <<EOF
++#!/usr/bin/env bash
++touch "$marker"
++exit 99
++EOF
++  chmod +x "$stub_bin/cabal" "$stub_bin/check-jsonschema" "$stub_bin/measure"
++
++  printf '{"tests":[]}\n' > "$local_tests"
++
++  local output_file
++  output_file="$(cape_mktemp)"
++
++  TESTS_RUN=$((TESTS_RUN + 1))
++  rm -f "$marker"
++  if PATH="$stub_bin:$PATH" PROJECT_ROOT="$SANDBOX_DIR" bash "$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh" "$fixture" > "$output_file" 2>&1; then
++    echo "ERROR: ✗ verify rejects submission-local cape-tests.json"
++    echo "  Expected: failure (non-zero)"
++    TESTS_FAILED=$((TESTS_FAILED + 1))
++  elif grep -q "Submission-local cape-tests.json is not allowed" "$output_file" && [[ ! -e "$marker" ]]; then
++    echo "INFO: ✓ verify rejects submission-local cape-tests.json"
++    TESTS_PASSED=$((TESTS_PASSED + 1))
++  else
++    echo "ERROR: ✗ verify rejects submission-local cape-tests.json"
++    echo "  Output:"
++    sed 's/^/    /' "$output_file"
++    TESTS_FAILED=$((TESTS_FAILED + 1))
++  fi
++
++  TESTS_RUN=$((TESTS_RUN + 1))
++  rm -f "$marker"
++  if PATH="$stub_bin:$PATH" PROJECT_ROOT="$SANDBOX_DIR" bash "$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh" "$fixture" > "$output_file" 2>&1; then
++    echo "ERROR: ✗ measure rejects submission-local cape-tests.json"
++    echo "  Expected: failure (non-zero)"
++    TESTS_FAILED=$((TESTS_FAILED + 1))
++  elif grep -q "Submission-local cape-tests.json is not allowed" "$output_file" && [[ ! -e "$marker" ]]; then
++    echo "INFO: ✓ measure rejects submission-local cape-tests.json"
++    TESTS_PASSED=$((TESTS_PASSED + 1))
++  else
++    echo "ERROR: ✗ measure rejects submission-local cape-tests.json"
++    echo "  Output:"
++    sed 's/^/    /' "$output_file"
++    TESTS_FAILED=$((TESTS_FAILED + 1))
++  fi
++
++  rm -f "$local_tests" "$marker" "$output_file"
++}
++
+ # Setup clean test environment
+ setup_test_env() {
+   TEST_TMP_DIR="$(cape_mktemp_dir)"
+@@ -280,6 +348,8 @@ main() {
+     "verify help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/verify.sh\" --help)" 5 "" \
+     "measure help" "(cd \"$PROJECT_ROOT\" && PROJECT_ROOT=\"$SANDBOX_DIR\" bash \"$REPO_ROOT/scripts/cape-subcommands/submission/measure.sh\" --help)" 5 ""
+ 
++  run_submission_tests_file_regression
++
+   # Schema validation error reporting tests
+   test_group "schema validation error reporting" \
+     "create test submission for schema errors" \
+diff --git a/scripts/lib/cape_common.sh b/scripts/lib/cape_common.sh
+index 204c512..d7f0968 100755
+--- a/scripts/lib/cape_common.sh
++++ b/scripts/lib/cape_common.sh
+@@ -156,6 +156,19 @@ cape_relpath() {
+   fi
+ }
+ 
++cape_reject_submission_tests_file() {
++  local submission_dir="$1"
++  local submission_tests="$submission_dir/cape-tests.json"
++
++  if [[ -f "$submission_tests" ]]; then
++    cape_error "Submission-local cape-tests.json is not allowed: $(cape_relpath "$submission_tests")"
++    cape_error "Tests are part of the scenario contract; use scenarios/<scenario>/cape-tests.json."
++    return 1
++  fi
++
++  return 0
++}
++
+ # Iterator over submission directories (excludes TEMPLATE scenario)
+ # Usage: cape_each_submission_dir [root] -> prints absolute submission dir paths
+ cape_each_submission_dir() {
+-- 
+2.43.0
