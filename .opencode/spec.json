@@ -1,0 +1,19 @@
+{
+  "title": "Human-Connection #1832 patch artifact: hide email existence disclosure",
+  "goal": "Preserve a public patch artifact that fixes the email existence disclosure vulnerability in Human-Connection/Human-Connection#1832, since direct upstream PR creation is blocked by missing GitHub authentication.",
+  "scope": "In scope: verifying the patch file is present in the expected location under bounty-artifacts/human-connection-1832/. Out of scope: applying the patch to the upstream Human-Connection repository, running Jest integration tests, or setting up Neo4j/Docker.",
+  "acceptance_criteria": [
+    "CA-01: Patch file exists at bounty-artifacts/human-connection-1832/0001-avoid-disclosing-whether-submitted-emails-already-exist.patch",
+    "CA-02: Patch file content matches the canonical fix for Human-Connection #1832 (hides email existence disclosure)",
+    "CA-03: Patch file passes git diff --check (no whitespace errors)",
+    "CA-04: Patch documents all 5 modified files from the upstream Human-Connection project"
+  ],
+  "technical_approach": "The patch artifact has already been committed to this repository (commit 809bf7f). It is a standalone .patch file that documents the security fix for Human-Connection/Human-Connection#1832. The fix modifies: (1) existingEmailAddress.js resolver helper to return a sanitized response instead of throwing UserInputError, (2) emails.js resolver to handle the sanitized response, (3) emailMiddleware.js to skip email sending for owned addresses, (4) emails.spec.js to update test expectations, (5) registration.spec.js to update test expectations.",
+  "files_to_touch": [
+    "bounty-artifacts/human-connection-1832/0001-avoid-disclosing-whether-submitted-emails-already-exist.patch — the patch artifact (already committed)"
+  ],
+  "test_scenarios": [
+    { "type": "validation", "description": "Verify patch file exists and has correct content", "file": "bounty-artifacts/human-connection-1832/0001-avoid-disclosing-whether-submitted-emails-already-exist.patch" }
+  ],
+  "baseline_failures": []
+}
