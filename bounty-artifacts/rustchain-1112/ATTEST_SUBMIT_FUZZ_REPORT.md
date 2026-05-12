@@ -3,6 +3,8 @@
 Date: 2026-05-12
 Target: local Flask test client for `node/rustchain_v2_integrated_v2.2.1_rip200.py`
 Issue: https://github.com/Scottcjn/rustchain-bounties/issues/1112
+Reporter: eunseobchoi
+Artifact commit: 49da33751c391c93d435d2f786538353f6d844b8
 
 ## Summary
 
@@ -60,6 +62,8 @@ The campaign did not find an unhandled exception or endpoint crash. Malformed pa
 
 The highest-cost tested input class was oversized metadata and MAC arrays. In this local run those cases completed below the 1000 ms slow-case threshold, so I do not have evidence of an endpoint-level DoS from the tested payload sizes.
 
+Three structurally accepted cases returned `ok:true` with `fingerprint_passed:false`; these appear to follow the endpoint's zero-weight compatibility path rather than a crash or reward bypass.
+
 ## Reproduction
 
 ```bash
@@ -73,3 +77,9 @@ uv run --no-project --with flask --with pynacl python \
 The raw JSON result file includes each payload category, request preview, HTTP status, response code, response preview, and elapsed handler time.
 
 No production RustChain node was probed; all traffic used Flask `app.test_client()` locally.
+
+## Artifacts
+
+- Local raw result artifact: `/home/user/bounty-submissions/rustchain-1112/attest-submit-fuzz-results.json`
+- Local runner artifact: `/home/user/bounty-submissions/rustchain-1112/attest_submit_fuzz_campaign.py`
+- Public report artifact: https://github.com/eunseobchoi/NIPS26_A_CV2024/blob/main/bounty-artifacts/rustchain-1112/ATTEST_SUBMIT_FUZZ_REPORT.md
