@@ -1,0 +1,135 @@
+From 8b8bb9f0e90c931a2d8bf1bf4070165948c16c45 Mon Sep 17 00:00:00 2001
+From: Codex <codex@local>
+Date: Tue, 12 May 2026 09:04:31 +0900
+Subject: [PATCH] Limit sendrawtransaction body parameters before broadcast
+
+The public sendrawtransaction route accepted unbounded body parameters and parsed the raw transaction before checking payload size. Large tx/templateDataEncrypted/nameId values could tie up request handling and be persisted to OptIns.
+
+This adds configurable byte limits for the broadcast transaction payload fields and returns 400/413 responses before transaction parsing or database insertion.
+
+Constraint: Doichain/dapp #116 requests configurable validation and limits for sendrawtransaction body parameters
+
+Rejected: Only document reverse-proxy body limits | the application route still processed and stored oversized parameters
+
+Confidence: medium
+
+Scope-risk: narrow
+
+Directive: Keep sendrawtransaction size limits configurable under api.sendrawtransaction.* settings
+
+Tested: git diff --check; node --check server/api/rest/imports/send.js
+
+Not-tested: Meteor/Restivus integration tests were not run because this archived package has no local Meteor test stack configured here
+---
+ server/api/rest/imports/send.js | 82 +++++++++++++++++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+
+diff --git a/server/api/rest/imports/send.js b/server/api/rest/imports/send.js
+index 0ee296c..193e96c 100644
+--- a/server/api/rest/imports/send.js
++++ b/server/api/rest/imports/send.js
+@@ -34,6 +34,7 @@ import getAddress from "../../../../imports/modules/server/doichain/get_address"
+ import getPublicKeyOfOriginTxId, {getPublicKeyOfRawTransaction}
+     from "../../../../imports/modules/server/doichain/getPublicKeyOfOriginTransaction";
+ import {verifySignature} from "doichain";
++import {getSettings} from "meteor/doichain:settings";
+ import {
+     getRawTransaction,
+     importAddress,
+@@ -44,6 +45,85 @@ import {
+     getaddressesbylabel, generateToAddress, doichainSendToAddress,getBalance
+ } from "../../doichain";
+ 
++const BROADCAST_TX_LIMIT_SETTINGS = {
++    tx: {
++        path: 'api.sendrawtransaction.maxTxBytes',
++        defaultValue: 100000
++    },
++    nameId: {
++        path: 'api.sendrawtransaction.maxNameIdBytes',
++        defaultValue: 512
++    },
++    templateDataEncrypted: {
++        path: 'api.sendrawtransaction.maxTemplateDataEncryptedBytes',
++        defaultValue: 65536
++    }
++};
++
++function getPositiveIntegerSetting(path, defaultValue) {
++    const value = Number(getSettings(path, defaultValue));
++    return Number.isFinite(value) && value > 0 ? value : defaultValue;
++}
++
++function utf8ByteLength(value) {
++    return Buffer.byteLength(value, 'utf8');
++}
++
++function requestError(statusCode, message, details = {}) {
++    return {
++        statusCode,
++        body: {
++            status: 'fail',
++            message,
++            ...details
++        }
++    };
++}
++
++function validateStringSize(params, key, limit) {
++    if (params[key] === undefined || params[key] === null) return null;
++    if (typeof params[key] !== 'string') {
++        return requestError(400, `${key} must be a string`, {param: key});
++    }
++
++    const actualBytes = utf8ByteLength(params[key]);
++    if (actualBytes > limit) {
++        return requestError(413, `${key} exceeds configured size limit`, {
++            param: key,
++            maxBytes: limit,
++            actualBytes
++        });
++    }
++
++    return null;
++}
++
++function validateBroadcastTxParams(params) {
++    if (!params || typeof params !== 'object') {
++        return requestError(400, 'request body must be an object');
++    }
++    if (params.tx === undefined || params.tx === null || params.tx === '') {
++        return requestError(400, 'tx is required', {param: 'tx'});
++    }
++
++    const txLimit = getPositiveIntegerSetting(
++        BROADCAST_TX_LIMIT_SETTINGS.tx.path,
++        BROADCAST_TX_LIMIT_SETTINGS.tx.defaultValue
++    );
++    const nameIdLimit = getPositiveIntegerSetting(
++        BROADCAST_TX_LIMIT_SETTINGS.nameId.path,
++        BROADCAST_TX_LIMIT_SETTINGS.nameId.defaultValue
++    );
++    const templateDataLimit = getPositiveIntegerSetting(
++        BROADCAST_TX_LIMIT_SETTINGS.templateDataEncrypted.path,
++        BROADCAST_TX_LIMIT_SETTINGS.templateDataEncrypted.defaultValue
++    );
++
++    return validateStringSize(params, 'tx', txLimit) ||
++        validateStringSize(params, 'nameId', nameIdLimit) ||
++        validateStringSize(params, 'templateDataEncrypted', templateDataLimit);
++}
++
+ /**
+  * Verifies a sender email to belong to a certain wallet.
+  * Params:
+@@ -651,6 +731,8 @@ Api.addRoute(DOICHAIN_BROADCAST_TX, {
+         authRequired: false,
+         action: function() {
+             const params = this.bodyParams;
++            const validationError = validateBroadcastTxParams(params);
++            if (validationError) return validationError;
+             var tx = bitcoin.Transaction.fromHex(params.tx); //https://github.com/you21979/node-multisig-wallet/blob/master/lib/txdecoder.js
+             //var txid = tx.getId();
+             //is this a standard DOI coin transaction or a DOI request transaction?
+-- 
+2.43.0
