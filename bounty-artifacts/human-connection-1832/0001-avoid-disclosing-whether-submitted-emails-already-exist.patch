@@ -1,0 +1,190 @@
+From f1437107894a8859a5e3c45d1dec7303aa561ac9 Mon Sep 17 00:00:00 2001
+From: Codex <codex@local>
+Date: Tue, 12 May 2026 08:50:08 +0900
+Subject: [PATCH] Avoid disclosing whether submitted emails already exist
+
+Signup and email-change flows returned a specific GraphQL error when an address already belonged to an account. That let callers distinguish registered email addresses from unregistered ones.
+
+The resolver now returns the same successful outward shape for already-owned addresses and tags the internal response so email middleware skips sending signup or verification links without exposing the condition to the caller. The race-path verification error also uses the existing generic invalid nonce message.
+
+Constraint: Human-Connection #1832 explicitly asks to stop disclosing whether an email address exists
+
+Rejected: Keep throwing a specific UserInputError | it is the observable enumeration channel described in the bounty issue
+
+Confidence: medium
+
+Scope-risk: narrow
+
+Directive: Keep account-existence conditions out of public mutation errors for registration and email-change flows
+
+Tested: git diff --check; node --check on changed resolver, middleware, and spec files
+
+Not-tested: Jest integration tests were not run because this environment has no yarn/node_modules, neo4j, or docker
+---
+ .../src/middleware/email/emailMiddleware.js   |  8 ++++++
+ backend/src/schema/resolvers/emails.js        |  7 ++---
+ backend/src/schema/resolvers/emails.spec.js   | 27 +++++++++++++++----
+ .../resolvers/helpers/existingEmailAddress.js | 17 +++++++++---
+ .../src/schema/resolvers/registration.spec.js |  5 ++--
+ 5 files changed, 50 insertions(+), 14 deletions(-)
+
+diff --git a/backend/src/middleware/email/emailMiddleware.js b/backend/src/middleware/email/emailMiddleware.js
+index a695305..72a1298 100644
+--- a/backend/src/middleware/email/emailMiddleware.js
++++ b/backend/src/middleware/email/emailMiddleware.js
+@@ -44,6 +44,10 @@ if (!hasEmailConfig) {
+ 
+ const sendSignupMail = async (resolve, root, args, context, resolveInfo) => {
+   const response = await resolve(root, args, context, resolveInfo)
++  if (response.belongsToExistingUser) {
++    delete response.belongsToExistingUser
++    return response
++  }
+   const { email, nonce } = response
+   await sendMail(signupTemplate({ email, nonce }))
+   delete response.nonce
+@@ -60,6 +64,10 @@ const sendPasswordResetMail = async (resolve, root, args, context, resolveInfo)
+ 
+ const sendEmailVerificationMail = async (resolve, root, args, context, resolveInfo) => {
+   const response = await resolve(root, args, context, resolveInfo)
++  if (response.belongsToExistingUser) {
++    delete response.belongsToExistingUser
++    return response
++  }
+   const { email, nonce, name } = response
+   await sendMail(emailVerificationTemplate({ email, nonce, name }))
+   delete response.nonce
+diff --git a/backend/src/schema/resolvers/emails.js b/backend/src/schema/resolvers/emails.js
+index 7986f26..6e0eef7 100644
+--- a/backend/src/schema/resolvers/emails.js
++++ b/backend/src/schema/resolvers/emails.js
+@@ -18,8 +18,9 @@ export default {
+         throw new UserInputError('must be a valid email')
+       }
+ 
+-      // check email does not belong to anybody
+-      await existingEmailAddress({ args, context })
++      // Keep the outward response generic if the email already belongs to an account.
++      const existingEmail = await existingEmailAddress({ args, context })
++      if (existingEmail && existingEmail.belongsToExistingUser) return existingEmail
+ 
+       const nonce = generateNonce()
+       const {
+@@ -78,7 +79,7 @@ export default {
+         response = txResult[0]
+       } catch (e) {
+         if (e.code === 'Neo.ClientError.Schema.ConstraintValidationFailed')
+-          throw new UserInputError('A user account with this email already exists.')
++          throw new UserInputError('Invalid nonce or no email address found.')
+         throw new Error(e)
+       } finally {
+         session.close()
+diff --git a/backend/src/schema/resolvers/emails.spec.js b/backend/src/schema/resolvers/emails.spec.js
+index 94e7ede..c50840b 100644
+--- a/backend/src/schema/resolvers/emails.spec.js
++++ b/backend/src/schema/resolvers/emails.spec.js
+@@ -118,6 +118,7 @@ describe('AddEmailAddress', () => {
+               AddEmailAddress: {
+                 email: 'new-email@example.org',
+                 verifiedAt: null,
++                createdAt: expect.any(String),
+               },
+             },
+             errors: undefined,
+@@ -126,13 +127,29 @@ describe('AddEmailAddress', () => {
+       })
+ 
+       describe('but if another user owns an `EmailAddress` already with that email', () => {
+-        it('throws UserInputError because of unique constraints', async () => {
++        it('resolves without disclosing that the email already exists', async () => {
+           await Factory.build('user', {}, { email: 'new-email@example.org' })
+           await expect(mutate({ mutation, variables })).resolves.toMatchObject({
+-            data: { AddEmailAddress: null },
+-            errors: [{ message: 'A user account with this email already exists.' }],
++            data: {
++              AddEmailAddress: {
++                email: 'new-email@example.org',
++                verifiedAt: null,
++                createdAt: expect.any(String),
++              },
++            },
++            errors: undefined,
+           })
+         })
++
++        it('creates no unverified email address for the authenticated user', async () => {
++          await Factory.build('user', {}, { email: 'new-email@example.org' })
++          await mutate({ mutation, variables })
++          const result = await neode.cypher(`
++            MATCH(:User {id: "567"})<-[:BELONGS_TO]-(e:UnverifiedEmailAddress {email: "new-email@example.org"})
++            RETURN e
++          `)
++          expect(result.records).toHaveLength(0)
++        })
+       })
+     })
+   })
+@@ -283,10 +300,10 @@ describe('VerifyEmailAddress', () => {
+               await Factory.build('emailAddress', { email: 'to-be-verified@example.org' })
+             })
+ 
+-            it('throws UserInputError because of unique constraints', async () => {
++            it('does not disclose that the email was claimed in the meantime', async () => {
+               await expect(mutate({ mutation, variables })).resolves.toMatchObject({
+                 data: { VerifyEmailAddress: null },
+-                errors: [{ message: 'A user account with this email already exists.' }],
++                errors: [{ message: 'Invalid nonce or no email address found.' }],
+               })
+             })
+           })
+diff --git a/backend/src/schema/resolvers/helpers/existingEmailAddress.js b/backend/src/schema/resolvers/helpers/existingEmailAddress.js
+index 717d0d9..bf18fd7 100644
+--- a/backend/src/schema/resolvers/helpers/existingEmailAddress.js
++++ b/backend/src/schema/resolvers/helpers/existingEmailAddress.js
+@@ -1,5 +1,3 @@
+-import { UserInputError } from 'apollo-server'
+-
+ export default async function alreadyExistingMail({ args, context }) {
+   const session = context.driver.session()
+   try {
+@@ -21,8 +19,19 @@ export default async function alreadyExistingMail({ args, context }) {
+     })
+     const [emailBelongsToUser] = await existingEmailAddressTxPromise
+     const { alreadyExistingEmail, user } = emailBelongsToUser || {}
+-    if (user) throw new UserInputError('A user account with this email already exists.')
+-    return alreadyExistingEmail
++    if (!alreadyExistingEmail) return null
++    if (user) {
++      return {
++        email: args.email,
++        verifiedAt: null,
++        createdAt: new Date().toISOString(),
++        belongsToExistingUser: true,
++      }
++    }
++    return {
++      ...alreadyExistingEmail,
++      belongsToExistingUser: false,
++    }
+   } finally {
+     session.close()
+   }
+diff --git a/backend/src/schema/resolvers/registration.spec.js b/backend/src/schema/resolvers/registration.spec.js
+index 63dc355..629a1c1 100644
+--- a/backend/src/schema/resolvers/registration.spec.js
++++ b/backend/src/schema/resolvers/registration.spec.js
+@@ -108,9 +108,10 @@ describe('Signup', () => {
+               await emailAddress.relateTo(user, 'belongsTo')
+             })
+ 
+-            it('throws UserInputError error because of unique constraint violation', async () => {
++            it('resolves without disclosing that the email already exists', async () => {
+               await expect(mutate({ mutation, variables })).resolves.toMatchObject({
+-                errors: [{ message: 'A user account with this email already exists.' }],
++                data: { Signup: { email: 'someuser@example.org' } },
++                errors: undefined,
+               })
+             })
+           })
+-- 
+2.43.0
