@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import re
 import sys
 import tempfile
 import unittest
@@ -89,6 +90,21 @@ class AggregateLoaderTests(unittest.TestCase):
             path = Path(tmp) / "ok.json"
             path.write_text(json.dumps({"runs": []}))
             self.assertEqual(self.aggregate.load(str(path)), {"runs": []})
+
+
+class BountyArtifactTests(unittest.TestCase):
+    def test_public_reports_do_not_reference_local_artifact_paths(self) -> None:
+        report_paths = sorted((ROOT / "bounty-artifacts").glob("*/REPORT.md"))
+        self.assertGreater(len(report_paths), 0)
+
+        local_path = re.compile(r"(?<![\w/])(?:/home/|~/|[A-Za-z]:[\\/])")
+        offenders: list[str] = []
+        for path in report_paths:
+            for lineno, line in enumerate(path.read_text().splitlines(), start=1):
+                if local_path.search(line):
+                    offenders.append(f"{path.relative_to(ROOT)}:{lineno}: {line}")
+
+        self.assertEqual(offenders, [])
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ Verified via GitHub connector on 2026-05-12: issue is open, labeled `💎 Bounty
 
 I cannot open a direct upstream PR from this environment because GitHub CLI/user authentication is unavailable, no SSH fork exists for the target repository, and connector writes are limited to the evidence repository.
 
-This artifact is therefore a public report and prepared-patch record, not an upstream PR.
+This artifact is therefore a public implementation report, not an upstream PR.
 
 ## Summary
 
@@ -23,21 +23,15 @@ The implementation adds an admin-only audit log surface for organization activit
 
 The audit hook records user, organization, action/route, method, path, response status, IP address, user agent, request ID, and route params. It intentionally does not store request bodies because API payloads can contain secrets.
 
-## Local artifacts
+## Public artifact availability
 
-Local patch file in this workspace:
+The previously prepared patch, PR description, and commit message were
+machine-local files and were not committed into this public evidence
+repository. They should not be treated as available artifacts from this
+report.
 
-`/home/user/bounty-submissions/archestra-3854/archestra-3854-audit-logs.patch`
-
-Patch size: 172455 bytes.
-
-Local PR description:
-
-`/home/user/bounty-submissions/archestra-3854/PR_DESCRIPTION.md`
-
-Local commit message:
-
-`/home/user/bounty-submissions/archestra-3854/COMMIT_MESSAGE.txt`
+The public evidence preserved here is limited to this report's bounty
+reference, implementation summary, verification claims, and scope notes.
 
 ## Verification claimed by the prepared artifact
 
